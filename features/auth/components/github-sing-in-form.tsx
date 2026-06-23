@@ -43,7 +43,11 @@ type GithubSignInFormProps = {
 
 export function GithubSignInForm({ callbackUrl }: GithubSignInFormProps) {
   return (
-    <form action={signInWithGithub} className="w-full">
+    <form
+      action={signInWithGithub}
+      className="w-full"
+      aria-label="Sign in form"
+    >
       {callbackUrl ? (
         <input type="hidden" name="callbackUrl" value={callbackUrl} />
       ) : null}

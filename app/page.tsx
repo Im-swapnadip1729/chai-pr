@@ -1,7 +1,7 @@
-import Image from "next/image";
-import { ModeToggle } from "@/components/my-ui/mode-toggle";
-import { UserMenuWithSession } from "@/features/auth/components/user-menu";
+import Image from 'next/image';
+import { UserMenuWithSession } from '@/features/auth/components/user-menu';
 import type { Metadata } from 'next';
+import { ModeToggle } from '@/components/my-ui/mode-toggle';
 
 export const metadata: Metadata = {
   title: 'VelocitySync',
@@ -12,6 +12,9 @@ export default function Home() {
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
       <UserMenuWithSession variant="compact" />
+      <div className="absolute right-4 top-4 z-10">
+        <ModeToggle />
+      </div>
       <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
         <Image
           className="dark:invert"
@@ -69,7 +72,6 @@ export default function Home() {
           </a>
         </div>
       </main>
-      <ModeToggle />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { requireAuth } from '@/features/auth/actions';
 import { DashboardShell } from '@/features/dashboard/components/dashboard-shell';
+import { ModeToggle } from '@/components/my-ui/mode-toggle';
 
 export default async function DashboardLayout({
   children,
@@ -9,12 +10,13 @@ export default async function DashboardLayout({
   const session = await requireAuth();
 
   return (
-    <DashboardShell user={session.user} plan="Pro">
-      {children}
-    </DashboardShell>
+    <div className="relative min-h-svh">
+      <div className="absolute right-4 top-4 z-10">
+        <ModeToggle />
+      </div>
+      <DashboardShell user={session.user} plan="Pro">
+        {children}
+      </DashboardShell>
+    </div>
   );
 }
-
-
-
-
