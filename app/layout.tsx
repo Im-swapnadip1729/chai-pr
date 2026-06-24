@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/provider/theme-provider";
 import {QueryProvider} from "@/components/provider/query-provider";
+import { TRPCReactProvider } from "@/trpc/client";
 
 const oxanium = Oxanium({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -33,25 +34,27 @@ export default function RootLayout({
       lang="en"
       suppressHydrationWarning
       className={cn(
-        'h-full',
-        'antialiased',
+        "h-full",
+        "antialiased",
         geistSans.variable,
         geistMono.variable,
-        'font-sans',
-        oxanium.variable
+        "font-sans",
+        oxanium.variable,
       )}
     >
       <body className="min-h-full flex flex-col">
-        <QueryProvider>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <TooltipProvider>{children}</TooltipProvider>
-        </ThemeProvider>
-        </QueryProvider>
+        <TRPCReactProvider>
+          <QueryProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <TooltipProvider>{children}</TooltipProvider>
+            </ThemeProvider>
+          </QueryProvider>
+        </TRPCReactProvider>
       </body>
     </html>
   );
