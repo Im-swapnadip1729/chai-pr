@@ -1,24 +1,40 @@
-import { initTRPC } from "@trpc/server";
-/**
- * This context creator accepts `headers` so it can be reused in both
- * the RSC server caller (where you pass `next/headers`) and the
- * API route handler (where you pass the request headers).
- */
-export const createTRPCContext = async (opts: { headers: Headers }) => {
-  // const user = await auth(opts.headers);
-  return { userId: "user_123" };
-};
-// Avoid exporting the entire t-object
-// since it's not very descriptive.
-// For instance, the use of a t variable
-// is common in i18n libraries.
-const t = initTRPC.context<Awaited<ReturnType<typeof createTRPCContext>>>().create({
-  /**
-   * @see https://trpc.io/docs/server/data-transformers
-   */
-  // transformer: superjson,
+import { initTRPC, TRPCError } from "@trpc/server";
+import { cache } from "react";
+import superjson from "superjson";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+
+// Cached per-request — auth.api.getSession is called at most once per request
+export const createTRPCContext = cache(async () => {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  return {
+    session,
+    user: session?.user ?? null,
+  };
 });
-// Base router and procedure helpers
+
+export type TRPCContext = Awaited<ReturnType<typeof createTRPCContext>>;
+
+const t = initTRPC.context<TRPCContext>().create({
+  transformer: superjson,
+  errorFormatter({ shape }) {
+    return shape;
+  },
+});
+
 export const createTRPCRouter = t.router;
 export const createCallerFactory = t.createCallerFactory;
-export const baseProcedure = t.procedure;
+
+/** No auth required */
+export const publicProcedure = t.procedure;
+
+/** Throws UNAUTHORIZED if no session — ctx.user is non-null inside */
+export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
+  if (!ctx.user) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+  return next({ ctx: { ...ctx, user: ctx.user } });
+});

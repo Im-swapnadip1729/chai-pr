@@ -11,7 +11,7 @@ export default async function DashboardLayout({
 
   return (
     <div className="relative min-h-svh">
-      <div className="absolute right-4 top-4 z-10">
+      <div className="absolute right-4 bottom-4 z-10">
         <ModeToggle />
       </div>
       <DashboardShell user={session.user} plan="Pro">

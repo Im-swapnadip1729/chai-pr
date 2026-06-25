@@ -1,23 +1,17 @@
-import "server-only"; // <-- ensure this file cannot be imported from the client
-import { createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
-import { headers } from "next/headers";
+import "server-only";
 import { cache } from "react";
-import { createTRPCContext } from "./init";
+import { createHydrationHelpers } from "@trpc/react-query/rsc"; 
+import { createCallerFactory, createTRPCContext } from "./init";
+import { appRouter } from "./router";
 import { makeQueryClient } from "./query-client";
-import { appRouter } from "./routers/_app";
-// IMPORTANT: Create a stable getter for the query client that
-//            will return the same client during the same request.
-export const getQueryClient = cache(makeQueryClient);
-export const trpc = createTRPCOptionsProxy({
-  ctx: async () =>
-    createTRPCContext({
-      headers: await headers(),
-    }),
-  router: appRouter,
-  queryClient: getQueryClient,
-});
-// If your router is on a separate server, pass a client instead:
-// createTRPCOptionsProxy({
-//   client: createTRPCClient({ links: [httpLink({ url: '...' })] }),
-//   queryClient: getQueryClient,
-// });
+
+const createCaller = createCallerFactory(appRouter);
+
+export const trpc = createCaller(createTRPCContext);
+
+const getQueryClient = cache(makeQueryClient);
+
+export const { HydrateClient, trpc: prefetch } = createHydrationHelpers<typeof appRouter>(
+  createCaller(createTRPCContext),
+  getQueryClient,
+);
