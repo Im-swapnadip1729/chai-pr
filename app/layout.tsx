@@ -5,7 +5,8 @@ import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/provider/theme-provider";
 import {QueryProvider} from "@/components/provider/query-provider";
-import { TRPCReactProvider } from "@/trpc/client";
+
+import { Provider } from "@/providers";
 
 const oxanium = Oxanium({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -43,18 +44,18 @@ export default function RootLayout({
       )}
     >
       <body className="min-h-full flex flex-col">
-        <TRPCReactProvider>
+        <Provider>
           <QueryProvider>
             <ThemeProvider
+              disableTransitionOnChange
               attribute="class"
               defaultTheme="system"
               enableSystem
-              disableTransitionOnChange
             >
               <TooltipProvider>{children}</TooltipProvider>
             </ThemeProvider>
           </QueryProvider>
-        </TRPCReactProvider>
+        </Provider>
       </body>
     </html>
   );

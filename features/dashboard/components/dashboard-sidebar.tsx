@@ -33,7 +33,7 @@ export function DashboardSidebar({
           <SidebarMenuItem>
             <SidebarMenuButton
               size="lg"
-              tooltip="ChaiCodeAIReview"
+              tooltip="VelocitySync AIReview"
               render={
                 <Link href={DASHBOARD_ROUTES.overview}>
                   <span className="flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-none bg-sidebar">
@@ -47,7 +47,7 @@ export function DashboardSidebar({
                   </span>
                   <span className="grid flex-1 text-left leading-tight group-data-[collapsible=icon]:hidden">
                     <span className="truncate font-large padding-x-2 text-lg ">
-                      VelocitySync
+                      Velocity Sync
                     </span>
                   </span>
                 </Link>
